@@ -8,6 +8,7 @@ authors = ["mari <mari@hakke.ro>"]
 python = "^3.10"
 fastapi = "^0.70.0"
 uvicorn = "^0.15.0"
+typer = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
