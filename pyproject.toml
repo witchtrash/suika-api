@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "suika-api"
+name = "suika"
 version = "0.1.0"
 description = ""
 authors = ["mari <mari@hakke.ro>"]

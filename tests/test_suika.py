@@ -1,4 +1,4 @@
-from suika_api import __version__
+from suika import __version__
 
 
 def test_version():

@@ -1,1 +1,1 @@
-# suika-api
+# suika
