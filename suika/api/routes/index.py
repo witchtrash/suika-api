@@ -8,5 +8,5 @@ router = APIRouter()
 async def index(settings: Settings = Depends(get_settings)):
   return {
     'name': settings.app_name,
-    'version': f'v{__version__}'
+    'version': __version__
   }
