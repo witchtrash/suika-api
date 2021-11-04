@@ -1,10 +1,12 @@
+from fastapi import APIRouter, Depends
 from suika.main import __version__
-from fastapi import APIRouter
+from suika.config import get_settings, Settings
 
 router = APIRouter()
 
 @router.get('/')
-async def index():
+async def index(settings: Settings = Depends(get_settings)):
   return {
+    'name': settings.app_name,
     'version': f'v{__version__}'
   }
