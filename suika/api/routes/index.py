@@ -4,9 +4,7 @@ from suika.config import get_settings, Settings
 
 router = APIRouter()
 
-@router.get('/')
+
+@router.get("/")
 async def index(settings: Settings = Depends(get_settings)):
-  return {
-    'name': settings.app_name,
-    'version': __version__
-  }
+    return {"name": settings.app_name, "version": __version__}
