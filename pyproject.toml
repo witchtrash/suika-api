@@ -11,9 +11,11 @@ uvicorn = "^0.15.0"
 typer = "^0.4.0"
 python-dotenv = "^0.19.1"
 requests = "^2.26.0"
+SQLAlchemy = "^1.4.26"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
+alembic = "^1.7.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
