@@ -9,11 +9,11 @@ client = TestClient(app)
 
 
 def test_index():
-  settings = get_test_settings()
+    settings = get_test_settings()
 
-  response = client.get('/')
-  assert response.status_code == 200
-  assert response.json() == {
-    'name': settings.app_name,
-    'version': __version__
-  }
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {
+        "name": settings.APP_NAME,
+        "version": __version__,
+    }

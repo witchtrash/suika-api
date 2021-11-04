@@ -1,15 +1,32 @@
 from functools import lru_cache
-from pydantic import BaseSettings
+from typing import Any, Dict, Optional
+from pydantic import BaseSettings, PostgresDsn, validator
 
 
 class Settings(BaseSettings):
-    app_name: str
-    database_host: str
-    database_user: str
-    database_password: str
+    APP_NAME: str
+    DATABASE_HOST: str
+    DATABASE_USER: str
+    DATABASE_PASSWORD: str
+    DATABASE_NAME: str
+    SQLALCHEMY_DATABASE_URI: PostgresDsn = None
+
+    # Build the Postgres DSN string before validating it
+    @validator("SQLALCHEMY_DATABASE_URI", pre=True)
+    def create_postgres_dsn(cls, v: Optional[str], values: Dict[str, Any]) -> str:
+        if isinstance(v, str):
+            return v
+        return PostgresDsn.build(
+            scheme="postgresql",
+            user=values.get("DATABASE_USER"),
+            password=values.get("DATABASE_PASSWORD"),
+            host=values.get("DATABASE_HOST"),
+            path=f'/{values.get("DATABASE_NAME")}',
+        )
 
     class Config:
         env_file = ".env"
+        case_sensitive = True
 
 
 @lru_cache()
