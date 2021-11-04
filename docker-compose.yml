@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:14.0
+    container_name: "suika-db"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: foobar
+      POSTGRES_DB: suika
+    volumes:
+      - suika-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8001:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: suika@sui.ka
+      PGADMIN_DEFAULT_PASSWORD: foobar
+      PGADMIN_LISTEN_PORT: 80
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    links:
+      - "db:suika-db"
+
+volumes:
+  suika-data:
+  pgadmin-data:
