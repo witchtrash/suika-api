@@ -23,5 +23,7 @@ class Product(Common):
     prices = relationship("Price", back_populates="product")
 
     @property
-    def price(self) -> Price:
-        return self.prices[-1]
+    def price(self) -> Price | None:
+        if len(self.prices) > 0:
+            return self.prices[-1]
+        return None

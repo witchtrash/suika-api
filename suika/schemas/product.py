@@ -1,9 +1,10 @@
+from typing import Optional
+from pydantic import BaseModel
 from suika.schemas.common import Common
 from suika.schemas.price import PriceResponse
 
 
-class ProductResponse(Common):
-    id: str
+class ProductBase(BaseModel):
     sku: str
     name: str
     volume: float
@@ -16,7 +17,16 @@ class ProductResponse(Common):
     producer: str
     short_description: str
     season: str
-    price: PriceResponse
 
+
+class ProductResponse(ProductBase, Common):
+    id: str
+    price: Optional[PriceResponse]
+
+    class Config:
+        orm_mode = True
+
+
+class ProductRequest(ProductBase):
     class Config:
         orm_mode = True
