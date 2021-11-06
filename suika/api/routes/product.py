@@ -1,7 +1,9 @@
-from typing import List
+from typing import List, Optional, Literal
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic.main import BaseModel
 from sqlalchemy.orm import Session
 from fastapi_pagination import Page, paginate
+from sqlalchemy.sql.expression import asc, desc
 
 from suika.core.db import get_db
 from suika.models.product import Product
@@ -12,19 +14,37 @@ from suika.schemas.price import PriceResponse
 router = APIRouter()
 
 
+class ProductParams(BaseModel):
+    sort_direction: Optional[Literal["asc", "desc"]]
+    sort_by: Optional[Literal["id", "name", "price"]]
+    filter: Optional[str]
+
+
 @router.get(
     "/",
     response_model=Page[ProductResponse],
     summary="Get products",
     response_description="Response containing a list of products",
 )
-async def get_products(db: Session = Depends(get_db)):
+async def get_products(
+    db: Session = Depends(get_db), params: ProductParams = Depends()
+):
     """
     Get a list of products
     """
 
-    products = db.query(Product).join(Price).order_by(Product.id).all()
-    return paginate(products)
+    query = db.query(Product).join(Price)
+    direction = asc if params.sort_direction == 'asc' else desc
+
+    match params.sort_by:
+        case 'name':
+            query = query.order_by(direction(Product.name))
+        case 'price':
+            query = query.order_by(direction(Price.price))
+        case _:
+            query = query.order_by(direction(Product.id))
+
+    return paginate(query.all())
 
 
 @router.get(
