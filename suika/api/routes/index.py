@@ -6,8 +6,16 @@ from suika.schemas.info import Info
 router = APIRouter()
 
 
-@router.get("/", response_model=Info)
+@router.get(
+    "/",
+    response_model=Info,
+    summary="Get API info",
+    response_description="Response containing information about the API",
+)
 async def index(settings: Settings = Depends(get_settings)):
+    """
+    Get basic API information
+    """
     return {
         "name": settings.APP_NAME,
         "version": __version__,
