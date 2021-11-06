@@ -1,9 +1,11 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from fastapi_pagination import Page, paginate
 
 from suika.core.db import get_db
 from suika.models.product import Product
+from suika.models.price import Price
 from suika.schemas.product import ProductResponse
 from suika.schemas.price import PriceResponse
 
@@ -12,7 +14,7 @@ router = APIRouter()
 
 @router.get(
     "/",
-    response_model=List[ProductResponse],
+    response_model=Page[ProductResponse],
     summary="Get products",
     response_description="Response containing a list of products",
 )
@@ -20,7 +22,9 @@ async def get_products(db: Session = Depends(get_db)):
     """
     Get a list of products
     """
-    return db.query(Product).all()
+
+    products = db.query(Product).join(Price).order_by(Product.id).all()
+    return paginate(products)
 
 
 @router.get(
