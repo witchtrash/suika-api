@@ -1,19 +1,14 @@
-from fastapi.testclient import TestClient
-from suika.config import get_settings, get_test_settings
-from suika.main import app, __version__
-
-# Override the .env with .env.testing
-app.dependency_overrides[get_settings] = get_test_settings
-
-client = TestClient(app)
+from suika.config import get_test_settings
+from suika.main import __version__
+from suika.schemas.info import InfoResponse
 
 
-def test_index():
+def test_info(app):
     settings = get_test_settings()
 
-    response = client.get("/")
+    response = app.get("/")
+    json: InfoResponse = response.json()
+
     assert response.status_code == 200
-    assert response.json() == {
-        "name": settings.APP_NAME,
-        "version": __version__,
-    }
+    assert json["version"] == __version__
+    assert json["name"] == settings.APP_NAME

@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends
 from suika.main import __version__
 from suika.config import get_settings, Settings
-from suika.schemas.info import Info
+from suika.schemas.info import InfoResponse
 
 router = APIRouter()
 
 
 @router.get(
     "/",
-    response_model=Info,
+    response_model=InfoResponse,
     summary="Get API info",
     response_description="Response containing information about the API",
 )

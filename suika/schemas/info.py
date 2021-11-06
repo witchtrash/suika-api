@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
 
-class Info(BaseModel):
+class InfoResponse(BaseModel):
     name: str
     version: str

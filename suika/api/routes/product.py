@@ -4,15 +4,15 @@ from sqlalchemy.orm import Session
 
 from suika.core.db import get_db
 from suika.models.product import Product
-from suika.schemas.product import Product as ProductSchema
-from suika.schemas.price import Price as PriceSchema
+from suika.schemas.product import ProductResponse
+from suika.schemas.price import PriceResponse
 
 router = APIRouter()
 
 
 @router.get(
     "/",
-    response_model=List[ProductSchema],
+    response_model=List[ProductResponse],
     summary="Get products",
     response_description="Response containing a list of products",
 )
@@ -25,7 +25,7 @@ async def get_products(db: Session = Depends(get_db)):
 
 @router.get(
     "/{product_id}",
-    response_model=ProductSchema,
+    response_model=ProductResponse,
     summary="Get product",
     response_description="Response containing a single product",
 )
@@ -43,7 +43,7 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
 
 @router.get(
     "/{product_id}/price",
-    response_model=List[PriceSchema],
+    response_model=List[PriceResponse],
     summary="Get prices",
     response_description="Response containing historical "
     "pricing information for a given product",

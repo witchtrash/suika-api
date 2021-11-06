@@ -1,8 +1,8 @@
 from suika.schemas.common import Common
-from suika.schemas.price import Price
+from suika.schemas.price import PriceResponse
 
 
-class Product(Common):
+class ProductResponse(Common):
     id: str
     sku: str
     name: str
@@ -16,7 +16,7 @@ class Product(Common):
     producer: str
     short_description: str
     season: str
-    price: Price
+    price: PriceResponse
 
     class Config:
         orm_mode = True

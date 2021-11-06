@@ -1,7 +1,7 @@
 from suika.schemas.common import Common
 
 
-class Price(Common):
+class PriceResponse(Common):
     price: int
 
     class Config:
