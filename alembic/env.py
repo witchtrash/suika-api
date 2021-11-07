@@ -2,7 +2,7 @@ from logging.config import fileConfig
 from sqlalchemy.engine import create_engine
 from alembic import context
 
-from suika.config import get_test_settings
+from suika.config import get_settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -25,7 +25,7 @@ target_metadata = None
 
 
 def get_url() -> str:
-    settings = get_test_settings()
+    settings = get_settings()
     return settings.SQLALCHEMY_DATABASE_URI
 
 
