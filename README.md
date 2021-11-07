@@ -18,6 +18,20 @@ Additionally, if you use Postgres, you need to have build dependencies for psyco
 4. Run the migrations with `alembic upgrade head`
 5. Run the API with `uvicorn suika.main:app`
 
+### Deployment
+
+You can run Gunicorn on top of Uvicorn workers with something like
+
+```bash
+gunicorn suika.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:80`
+```
+
+If you want something more nuanced, you can use a dedicated process manager like Supervisor or Circus.
+
+
+See [https://www.uvicorn.org/deployment/](Uvicorn docs) for more details
+
+
 ## Testing
 
 Tests are contained within the `/tests` folder, and use the `.env.testing` variables.
