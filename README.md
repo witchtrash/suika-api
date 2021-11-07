@@ -2,20 +2,23 @@
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-### Requirements
+## Requirements
 
 Make sure to have Python 3.10 and poetry installed.
 
 I recommend using [pyenv](https://github.com/pyenv/pyenv) to manage your Python versions.
 
-### Setup
+Additionally, if you use Postgres, you need to have build dependencies for psycopg2 installed, usually `lib-pq` but this depends on which distro you're running. Consult your local swamp witch for detailed requirements.
+
+## Setup
 
 1. Spawn a shell with `poetry shell`
 2. Install dependencies with `poetry install`
 3. Copy `.env.example` to `.env` and update the settings
-4. Run the API with `uvicorn suika.main:app`
+4. Run the migrations with `alembic upgrade head`
+5. Run the API with `uvicorn suika.main:app`
 
-### Testing
+## Testing
 
 Tests are contained within the `/tests` folder, and use the `.env.testing` variables.
 

@@ -34,7 +34,7 @@ async def get_products(
     """
 
     query = db.query(Product).join(Price)
-    direction = asc if params.sort_direction == 'asc' else desc
+    direction = desc if params.sort_direction == 'desc' else asc
 
     match params.sort_by:
         case 'name':
