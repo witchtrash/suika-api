@@ -16,7 +16,7 @@ router = APIRouter()
 
 class ProductParams(BaseModel):
     sort_direction: Optional[Literal["asc", "desc"]]
-    sort_by: Optional[Literal["id", "name", "price"]]
+    sort_by: Optional[Literal["id", "name"]]
     filter: Optional[str]
 
 
@@ -33,14 +33,12 @@ async def get_products(
     Get a list of products
     """
 
-    query = db.query(Product).join(Price)
+    query = db.query(Product)
     direction = desc if params.sort_direction == 'desc' else asc
 
     match params.sort_by:
         case 'name':
             query = query.order_by(direction(Product.name))
-        case 'price':
-            query = query.order_by(direction(Price.price))
         case _:
             query = query.order_by(direction(Product.id))
 

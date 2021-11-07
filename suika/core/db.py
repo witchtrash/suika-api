@@ -4,9 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from suika.config import get_settings
 
 settings = get_settings()
-engine = create_engine(
-    settings.SQLALCHEMY_DATABASE_URI,
-)
+engine = create_engine(settings.SQLALCHEMY_DATABASE_URI)
 
 SessionLocal = sessionmaker(
     autocommit=False,

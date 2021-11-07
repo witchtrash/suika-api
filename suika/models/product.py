@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, Text
 from sqlalchemy.orm import relationship
 from suika.models.common import Common
-from suika.models.price import Price
 
 
 class Product(Common):
@@ -21,9 +20,3 @@ class Product(Common):
     short_description = Column(Text)
     season = Column(String, nullable=False)
     prices = relationship("Price", back_populates="product")
-
-    @property
-    def price(self) -> Price | None:
-        if len(self.prices) > 0:
-            return self.prices[-1]
-        return None
