@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 from suika.schemas.common import Common
 
@@ -18,7 +19,8 @@ class ProductBase(BaseModel):
 
 
 class ProductResponse(ProductBase, Common):
-    id: str
+    id: int
+    current_price: Optional[int]
 
     class Config:
         orm_mode = True

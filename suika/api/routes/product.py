@@ -7,7 +7,6 @@ from sqlalchemy.sql.expression import asc, desc
 
 from suika.core.db import get_db
 from suika.models.product import Product
-from suika.models.price import Price
 from suika.schemas.product import ProductResponse
 from suika.schemas.price import PriceResponse
 
@@ -72,7 +71,7 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
 )
 async def get_prices(product_id: int, db: Session = Depends(get_db)):
     """
-    Get pricing history for a product",
+    Get pricing history for a product
     """
     product = db.query(Product).filter(Product.id == product_id).first()
 

@@ -19,4 +19,5 @@ class Product(Common):
     producer = Column(String, nullable=False)
     short_description = Column(Text)
     season = Column(String, nullable=False)
+    current_price = Column(Integer, nullable=True, index=True)
     prices = relationship("Price", back_populates="product")
