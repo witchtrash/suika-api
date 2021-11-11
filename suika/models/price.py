@@ -7,6 +7,6 @@ class Price(Common):
     __tablename__ = "price"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    product_id = Column(Integer, ForeignKey("product.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("product.id"), nullable=False, index=True)
     product = relationship("Product", back_populates="prices")
-    price = Column(Integer, nullable=False)
+    price = Column(Integer, nullable=False, index=True)

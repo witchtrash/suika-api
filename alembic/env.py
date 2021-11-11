@@ -3,6 +3,8 @@ from sqlalchemy.engine import create_engine
 from alembic import context
 
 from suika.config import get_settings
+from suika.core.db import Base
+from suika.models import Product, Price  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -12,11 +14,7 @@ config = context.config
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

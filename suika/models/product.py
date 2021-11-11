@@ -7,10 +7,10 @@ class Product(Common):
     __tablename__ = "product"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    sku = Column(String, unique=True, index=True, nullable=False)
-    name = Column(String, nullable=False)
+    sku = Column(String, unique=True, nullable=False, index=True)
+    name = Column(String, nullable=False, index=True)
     volume = Column(Float, nullable=False)
-    abv = Column(Float, nullable=False)
+    abv = Column(Float, nullable=False, index=True)
     country_of_origin = Column(String, nullable=False)
     available = Column(Boolean, nullable=False)
     container_type = Column(String, nullable=False)
