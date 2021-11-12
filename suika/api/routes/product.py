@@ -1,6 +1,7 @@
+from math import ceil
 from typing import List, Optional, Literal
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic.main import BaseModel
+from pydantic import BaseModel, conint
 from sqlalchemy.orm import Session
 from fastapi_pagination import Page, paginate
 from sqlalchemy.sql.expression import asc, desc
@@ -9,39 +10,53 @@ from suika.core.db import get_db
 from suika.models.product import Product
 from suika.schemas.product import ProductResponse
 from suika.schemas.price import PriceResponse
+from suika.schemas.collection import Collection
 
 router = APIRouter()
 
 
 class ProductParams(BaseModel):
     sort_direction: Optional[Literal["asc", "desc"]]
-    sort_by: Optional[Literal["id", "name"]]
+    sort_by: Optional[Literal["id", "name", "current_price", "abv"]]
     filter: Optional[str]
+
+
+class PaginationParams(BaseModel):
+    page: conint(ge=1) = 1
+    per_page: conint(ge=10, le=100) = 50
 
 
 @router.get(
     "/",
-    response_model=Page[ProductResponse],
+    response_model=Collection[ProductResponse],
     summary="Get products",
     response_description="Response containing a list of products",
 )
 async def get_products(
-    db: Session = Depends(get_db), params: ProductParams = Depends()
+    db: Session = Depends(get_db),
+    params: ProductParams = Depends(),
+    pagination: PaginationParams = Depends(),
 ):
     """
     Get a list of products
     """
 
-    query = db.query(Product)
-    direction = desc if params.sort_direction == 'desc' else asc
+    sort_field = params.sort_by if params.sort_by is not None else "id"
+    sort = desc(sort_field) if params.sort_direction == "desc" else asc(sort_field)
 
-    match params.sort_by:
-        case 'name':
-            query = query.order_by(direction(Product.name))
-        case _:
-            query = query.order_by(direction(Product.id))
+    total = db.query(Product).count()
+    page_count = ceil(total / pagination.per_page)
+    offset = (pagination.page - 1) * pagination.per_page
 
-    return paginate(query.all())
+    query = db.query(Product).order_by(sort).offset(offset).limit(pagination.per_page)
+
+    return {
+        "items": query.all(),
+        "total": total,
+        "current_page": pagination.page,
+        "last_page": page_count,
+        "per_page": pagination.per_page,
+    }
 
 
 @router.get(
