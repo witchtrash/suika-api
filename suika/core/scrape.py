@@ -128,6 +128,7 @@ class BeerScrape:
                 producer=d["ProductProducer"],
                 short_description=d["ProductShortDescription"],
                 season=d["ProductSeasonCode"],
+                current_price=int(d["ProductPrice"]),
             )
 
             sentinel = self.db.query(Product).filter_by(sku=str(d["ProductID"])).first()
@@ -138,6 +139,7 @@ class BeerScrape:
                 product = sentinel
 
             product.prices.append(Price(price=int(d["ProductPrice"])))
+            product.current_price = int(d["ProductPrice"])
             stats["updated"] += 1
 
             self.db.add(product)
