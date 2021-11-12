@@ -1,42 +1,35 @@
-from math import ceil
 from typing import List, Optional, Literal
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, conint
+from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from fastapi_pagination import Page, paginate
 from sqlalchemy.sql.expression import asc, desc
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
 
 from suika.core.db import get_db
 from suika.models.product import Product
 from suika.schemas.product import ProductResponse
 from suika.schemas.price import PriceResponse
-from suika.schemas.collection import Collection
 
 router = APIRouter()
 
 
 class ProductParams(BaseModel):
-    sort_direction: Optional[Literal["asc", "desc"]]
-    sort_by: Optional[Literal["id", "name", "current_price", "abv"]]
-    filter: Optional[str]
-
-
-class PaginationParams(BaseModel):
-    page: conint(ge=1) = 1
-    per_page: conint(ge=10, le=100) = 50
+    sort_direction: Optional[Literal["asc", "desc"]] = Query("asc")
+    sort_by: Optional[Literal["id", "name", "current_price", "abv"]] = Query("id")
+    filter: Optional[str] = Query(None)
 
 
 @router.get(
     "/",
-    response_model=Collection[ProductResponse],
+    response_model=Page[ProductResponse],
     summary="Get products",
     response_description="Response containing a list of products",
 )
 async def get_products(
     db: Session = Depends(get_db),
     params: ProductParams = Depends(),
-    pagination: PaginationParams = Depends(),
-):
+) -> Page[ProductResponse]:
     """
     Get a list of products
     """
@@ -44,19 +37,15 @@ async def get_products(
     sort_field = params.sort_by if params.sort_by is not None else "id"
     sort = desc(sort_field) if params.sort_direction == "desc" else asc(sort_field)
 
-    total = db.query(Product).count()
-    page_count = ceil(total / pagination.per_page)
-    offset = (pagination.page - 1) * pagination.per_page
+    query = db.query(Product).order_by(sort)
 
-    query = db.query(Product).order_by(sort).offset(offset).limit(pagination.per_page)
+    if params.filter:
+        query = query.filter(
+            Product.name.like(f"%{params.filter}%")
+            | Product.sku.like(f"%{params.filter}")
+        )
 
-    return {
-        "items": query.all(),
-        "total": total,
-        "current_page": pagination.page,
-        "last_page": page_count,
-        "per_page": pagination.per_page,
-    }
+    return paginate(query)
 
 
 @router.get(
@@ -65,7 +54,10 @@ async def get_products(
     summary="Get product",
     response_description="Response containing a single product",
 )
-async def get_product(product_id: int, db: Session = Depends(get_db)):
+async def get_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+) -> ProductResponse:
     """
     Get a single product by ID
     """
@@ -84,7 +76,10 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
     response_description="Response containing historical "
     "pricing information for a given product",
 )
-async def get_prices(product_id: int, db: Session = Depends(get_db)):
+async def get_prices(
+    product_id: int,
+    db: Session = Depends(get_db),
+) -> List[PriceResponse]:
     """
     Get pricing history for a product
     """

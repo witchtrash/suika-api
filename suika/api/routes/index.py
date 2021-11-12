@@ -12,7 +12,7 @@ router = APIRouter()
     summary="Get API info",
     response_description="Response containing information about the API",
 )
-async def index(settings: Settings = Depends(get_settings)):
+async def index(settings: Settings = Depends(get_settings)) -> InfoResponse:
     """
     Get basic API information
     """
