@@ -28,9 +28,11 @@ gunicorn suika.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker
 
 If you want something more nuanced, you can use a dedicated process manager like Supervisor or Circus.
 
+See [Uvicorn docs](https://www.uvicorn.org/deployment/) for more details
 
-See [https://www.uvicorn.org/deployment/](Uvicorn docs) for more details
+### Running the scraper
 
+If you followed all the steps in the [setup](#setup), you can run the scraper with `python suika/core/scrape.py` or `poetry run python suika/core/scrape.py`
 
 ## Testing
 
