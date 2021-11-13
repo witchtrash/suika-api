@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-from suika.schemas.common import Common
+from suika.schemas.common import Collection, Common
 
 
 class ProductBase(BaseModel):
@@ -29,3 +29,8 @@ class ProductResponse(ProductBase, Common):
 class ProductRequest(ProductBase):
     class Config:
         orm_mode = True
+
+
+ProductCollection = Collection[ProductResponse]
+# Override name for the OpenAPI schema
+ProductCollection.__name__ = "ProductCollection"

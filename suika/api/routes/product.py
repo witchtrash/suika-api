@@ -8,7 +8,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 
 from suika.core.db import get_db
 from suika.models.product import Product
-from suika.schemas.product import ProductResponse
+from suika.schemas.product import ProductResponse, ProductCollection
 from suika.schemas.price import PriceResponse
 
 router = APIRouter()
@@ -22,7 +22,7 @@ class ProductParams(BaseModel):
 
 @router.get(
     "/",
-    response_model=Page[ProductResponse],
+    response_model=ProductCollection,
     summary="Get products",
     response_description="Response containing a list of products",
 )
